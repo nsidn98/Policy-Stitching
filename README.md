@@ -13,3 +13,6 @@ Modular Reinforcement Learning with policy stitching
 * Execute `python -m baselines.run --alg=her --env=FetchReach-v1 --num_timesteps=5000 --play --load_path=results`.
 * In case, you encounter the error: `ERROR: GLEW initalization error: Missing GL version`, then add the following line to your `.bashrc` or `.zshrc` file:  
 `export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so`.
+
+## Modified Models
+XML files for Jaco robot with a ball and a block
