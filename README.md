@@ -15,4 +15,6 @@ Modular Reinforcement Learning with policy stitching
 `export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so`.
 
 ## Modified Models
-XML files for Jaco robot with a ball and a block
+
+* XML files for Jaco robot with a ball and a block.
+* Go to `/opt/anaconda3/envs/py35/lib/python3.5/site-packages/gym/envs` to view and modify the xml/python files for some environment.
