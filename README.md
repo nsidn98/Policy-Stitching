@@ -17,4 +17,8 @@ Modular Reinforcement Learning with policy stitching
 ## Modified Models
 
 * XML files for Jaco robot with a ball and a block.
-* Go to `/opt/anaconda3/envs/py35/lib/python3.5/site-packages/gym/envs` to view and modify the xml/python files for some environment.
+* Go to `/opt/anaconda3/envs/py35/lib/python3.5/site-packages/gym` to view and modify the xml/python files for some environment.
+* Place `core.py` in the `gym` folder.
+* Place `envs/__init__.py` in the `envs` folder.
+* Place `envs/mujoco/assets/*` in the `envs/mujoco/assets` folder.
+* Place `envs/mujoco/__init__.py,jaco.py,jaco_pick.py` in the `envs/mujoco` folder.
