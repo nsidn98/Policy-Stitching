@@ -16,3 +16,9 @@ Modular Reinforcement Learning with policy stitching
 
 ## Modified Models
 XML files for Jaco robot with a ball and a block
+
+
+### TO DO
+* Jaco Python Environment 
+* Run HER on Jaco env
+* RL Algo implementation
