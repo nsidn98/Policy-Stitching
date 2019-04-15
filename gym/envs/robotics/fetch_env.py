@@ -1,7 +1,7 @@
 import numpy as np
 
 from gym.envs.robotics import rotations, robot_env, utils
-
+ 
 
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
@@ -113,7 +113,7 @@ class FetchEnv(robot_env.RobotEnv):
             grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state, object_rot.ravel(),
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
-        print(self.goal)
+        # print(self.goal)
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
@@ -168,6 +168,7 @@ class FetchEnv(robot_env.RobotEnv):
         return (d < self.distance_threshold).astype(np.float32)
 
     def _env_setup(self, initial_qpos):
+        print("QPOS\n\n")
         for name, value in initial_qpos.items():
             self.sim.data.set_joint_qpos(name, value)
         utils.reset_mocap_welds(self.sim)
