@@ -114,6 +114,11 @@ class FetchEnv(robot_env.RobotEnv):
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
         # print(self.goal)
+        # print({
+        #     'observation': obs.copy(),
+        #     'achieved_goal': achieved_goal.copy(),
+        #     'desired_goal': self.goal.copy(),
+        # })
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
