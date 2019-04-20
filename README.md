@@ -2,6 +2,9 @@
 
 Modular Reinforcement Learning with policy stitching
 
+
+### Commit `0164d3c` has the first stable working Jaco Environment
+
 ## DDPG
 
 * To run the DDPG algorithm, clone the [spinningup](https://github.com/openai/spinningup) repository of openai and `cd spinningup`.
