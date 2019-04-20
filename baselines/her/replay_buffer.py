@@ -62,8 +62,8 @@ class ReplayBuffer:
         """
         batch_sizes = [len(episode_batch[key]) for key in episode_batch.keys()]
         assert np.all(np.array(batch_sizes) == batch_sizes[0])
-        print('BATCH SIZE replay_buffer.py',batch_sizes)
-        print(episode_batch.keys())
+        # print('BATCH SIZE replay_buffer.py')
+        # print(episode_batch.keys())
         batch_size = batch_sizes[0]
 
         with self.lock:
@@ -71,12 +71,10 @@ class ReplayBuffer:
             # print('IDXS',idxs)
             # load inputs into buffers
             for key in self.buffers.keys():
-                print('episode_batch')
-                print(episode_batch[key].shape)
+                # print(episode_batch[key].shape)
                 # print(self.buffers[key][idxs].shape)
                 # print(self.buffers[key].shape)
                 self.buffers[key][idxs] = episode_batch[key]
-
             self.n_transitions_stored += batch_size * self.T
 
     def get_current_episode_size(self):

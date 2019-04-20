@@ -40,6 +40,8 @@ def train(*, policy, rollout_worker, evaluator,
         rollout_worker.clear_history()
         for _ in range(n_cycles):
             episode = rollout_worker.generate_rollouts()
+            # print('EPISODE her.py')
+            # print(episode['o'].shape)
             policy.store_episode(episode)
             for _ in range(n_batches):
                 policy.train()
@@ -169,6 +171,7 @@ def learn(*, network, env, total_timesteps,
 
     n_cycles = params['n_cycles']
     n_epochs = total_timesteps // n_cycles // rollout_worker.T // rollout_worker.rollout_batch_size
+    print(f'Running for {n_epochs} number of epochs\n')
 
     return train(
         save_path=save_path, policy=policy, rollout_worker=rollout_worker,

@@ -127,7 +127,6 @@ def log_params(params, logger=logger):
 def configure_her(params):
     env = cached_make_env(params['make_env'])
     env.reset()
-
     def reward_fun(ag_2, g, info):  # vectorized
         return env.compute_reward(achieved_goal=ag_2, desired_goal=g, info=info)
 

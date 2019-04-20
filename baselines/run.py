@@ -71,7 +71,6 @@ def train(args, extra_args):
             alg_kwargs['network'] = get_default_network(env_type)
 
     print('Training {} on {}:{} with arguments \n{}'.format(args.alg, env_type, env_id, alg_kwargs))
-
     model = learn(
         env=env,
         seed=seed,
@@ -108,13 +107,11 @@ def build_env(args):
         get_session(config=config)
 
         flatten_dict_observations = alg not in {'her'}
-        print('FLATTEN OBSERVATION run.py',flatten_dict_observations)
-        print()
         env = make_vec_env(env_id, env_type, args.num_env or 1, seed, reward_scale=args.reward_scale, flatten_dict_observations=flatten_dict_observations)
 
-        # if env_type == 'mujoco':
-        #     print('VECNORMALIZE run.py\n\n')
-        #     env = VecNormalize(env)
+        if env_type == 'mujoco':
+            print('VECNORMALIZE run.py\n\n')
+            env = VecNormalize(env)
 
     return env
 
