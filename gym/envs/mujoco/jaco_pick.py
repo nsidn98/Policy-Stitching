@@ -89,7 +89,8 @@ class JacoPickEnv(JacoEnv):
         grip_velp = self.sim.data.get_joint_qvel('jaco_joint_finger_1') * dt
         object_pos = self._get_pos('target')
         object_rel_pos = object_pos - grip_pos
-        achieved_goal = grip_pos.copy()
+        # achieved_goal = grip_pos.copy()
+        achieved_goal = object_pos.copy()
         # print('Position')
         # print(grip_pos,object_pos,object_rel_pos)
         # print()
@@ -97,6 +98,8 @@ class JacoPickEnv(JacoEnv):
             [grip_pos], object_pos.ravel(), object_rel_pos.ravel()])
         # print("grip pos, object pos, relpos")
         # print(grip_pos)
+        # print(self.sim.data.get_joint_qpos('jaco_joint_finger_2'))
+        # print(self.sim.data.get_joint_qpos('jaco_joint_finger_3'))
         # print(object_pos.ravel())
         # print(object_rel_pos.ravel())
         # return {
