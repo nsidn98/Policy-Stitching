@@ -48,11 +48,10 @@ class JacoPickEnv(JacoEnv):
 
         # dist_hand = self._get_distance_hand('box')
         dist_hand = self._get_distance_hand('target')
-        box_z = self._get_box_pos()[2]
-        in_air = box_z > 0.08
-        on_ground = box_z < 0.08
-        in_hand = dist_hand < 0.08
-
+        box_z = self._get_box_pos()[2] # z coordinate of box
+        in_air = box_z > 0.04 # diameter of ball
+        on_ground = box_z < 0.04
+        in_hand = dist_hand < 0.04
         # # pick
         # if in_air and in_hand:
         #     pick_reward = self._config["pick_reward"] * box_z
@@ -63,15 +62,17 @@ class JacoPickEnv(JacoEnv):
         #     done = True
 
         # success
-        if self._pick_count == 50:
-            success = True
-            # done = True
-            print('success')
+        # if self._pick_count == 50:
+        #     success = True
+        #     # done = True
+        #     print('success')
 
         reward = ctrl_reward + pick_reward
-        info = {"ctrl_reward_sum": ctrl_reward,
-                "pick_reward_sum": pick_reward,
-                "success_sum": success}
+        # info = {"ctrl_reward_sum": ctrl_reward,
+        #         "pick_reward_sum": pick_reward,
+        #         "success_sum": success}
+        info = {"is_success": self._is_success(ob['achieved_goal'], self.goal)}
+        reward  =self.compute_reward(ob['achieved_goal'],self.goal,info)
         return ob, reward, done, info
 
     # def _get_obs(self):
@@ -90,38 +91,17 @@ class JacoPickEnv(JacoEnv):
         return (d < self.distance_threshold).astype(np.float32)
 
     def _get_obs(self):
-        # print('GET OBS\n\n')
-        # positions
         grip_pos = self.sim.data.get_joint_qpos('jaco_joint_finger_1')
+        a = self._get_pos('jaco_link_hand')
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         grip_velp = self.sim.data.get_joint_qvel('jaco_joint_finger_1') * dt
         object_pos = self._get_pos('target')
+        # print('jaco_pick.py pos target')
+        # print(object_pos)
         object_rel_pos = object_pos - grip_pos
-        # achieved_goal = grip_pos.copy()
         achieved_goal = object_pos.copy()
-        # print('Position')
-        # print(grip_pos,object_pos,object_rel_pos)
-        # print()
         obs = np.concatenate([
             [grip_pos], object_pos.ravel(), object_rel_pos.ravel()])
-        # print("grip pos, object pos, relpos")
-        # print(grip_pos)
-        # print(self.sim.data.get_joint_qpos('jaco_joint_finger_2'))
-        # print(self.sim.data.get_joint_qpos('jaco_joint_finger_3'))
-        # print(object_pos.ravel())
-        # print(object_rel_pos.ravel())
-        # return {
-        #     'observation': obs.copy(),
-        #     'achieved_goal': achieved_goal.copy(),
-        #     'desired_goal': self.goal.copy(),
-        # }
-        # print('GOAL SHAPE jaco_pick.py')
-        # print(self.goal.shape)
-        # print('GOAL!!!! jaco_pick.py',self.goal.shape)
-        # print('ACHIEVED GOAL!!! jaco_pick.py',achieved_goal.shape)
-        # print(type(float(self.goal)))
-        # print(type(self.goal))
-        # print(type(achieved_goal))
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),

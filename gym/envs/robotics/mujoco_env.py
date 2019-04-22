@@ -18,7 +18,7 @@ class MujocoEnv(gym.Env):
     """Superclass for all MuJoCo environments.
     """
 
-    def __init__(self, model_path, frame_skip, n_actions = 4, rgb_rendering_tracking=True):
+    def __init__(self, model_path, frame_skip, rgb_rendering_tracking=True):
         if model_path.startswith("/"):
             fullpath = model_path
         else:
@@ -87,6 +87,10 @@ class MujocoEnv(gym.Env):
         """
         pass
     
+    def _is_success(self, achieved_goal, desired_goal):
+        """Indicates whether or not the achieved goal successfully achieved the desired goal.
+        """
+        raise NotImplementedError()
     # def compute_reward(self,achieved_goal,goal,info):
     #     raise NotImplementedError()
 

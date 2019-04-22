@@ -173,7 +173,7 @@ class FetchEnv(robot_env.RobotEnv):
         return (d < self.distance_threshold).astype(np.float32)
 
     def _env_setup(self, initial_qpos):
-        print("QPOS\n\n")
+        print(" fetch_env.py env setup\n\n")
         for name, value in initial_qpos.items():
             self.sim.data.set_joint_qpos(name, value)
         utils.reset_mocap_welds(self.sim)
