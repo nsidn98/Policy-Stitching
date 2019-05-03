@@ -2,7 +2,7 @@ from gym.envs.registration import registry, register, make, spec
 
 register(
     id='JacoPick-v1',
-    entry_point='gym.envs.mujoco:JacoPickEnv',
+    entry_point='gym.envs.robotics:JacoPickEnv',
     max_episode_steps=100,
 )
 

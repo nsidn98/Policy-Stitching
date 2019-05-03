@@ -9,7 +9,7 @@ def goal_distance(goal_a, goal_b):
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class JacoPickEnv(JacoEnv):
-    def __init__(self, with_rot=1,reward_type='dense',distance_threshold=0.1):
+    def __init__(self, with_rot=1,reward_type='dense',distance_threshold=0.05):
         super().__init__(with_rot=with_rot)
         self._config.update({
             "pick_reward": 10,
@@ -82,12 +82,15 @@ class JacoPickEnv(JacoEnv):
         return (d < self.distance_threshold).astype(np.float32)
 
     def _get_obs(self):
-        grip_pos = self.sim.data.get_site_xpos('jaco_joint_6')
+        
+        grip_pos = self._get_hand_pos()
+        # grip_pos = self.sim.data.get_site_xpos('jaco_joint_6')
         # a = self._get_pos('jaco_link_hand')
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         grip_velp = self.sim.data.get_site_xvelp('jaco_joint_6') * dt
-        j_qpos = self.data.qpos
-        j_qvel = self.data.qvel
+        gripper_state = self.data.qpos
+        gripper_vel = self.data.qvel*dt
+        gripper_acc = self.data.qacc
         # print("Qpos shape", self.sim.data.qacc.shape)
         # print("Gripvel: ", grip_velp)
         # object_pos = self._get_pos('ball')
@@ -96,15 +99,31 @@ class JacoPickEnv(JacoEnv):
         object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(3)
         object_rel_pos = object_pos - grip_pos
         achieved_goal = grip_pos.copy()
-        obs = np.concatenate([
-            grip_pos, object_pos.ravel(), grip_velp, object_rel_pos.ravel()])
+
+        ob = np.concatenate([grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state, object_rot.ravel(),
+            object_velp.ravel(), object_velr.ravel(), grip_velp, np.clip(gripper_vel, -30, 30), gripper_acc])
+        # print("object shape", ob.shape) #67
+
         return {
-            'observation': obs.copy(),
+            'observation': ob.copy(),
             'achieved_goal': achieved_goal.copy(),
              'desired_goal': (self.goal.copy()),
         }
             
         
+    def get_ob_dict(self, ob):
+        if len(ob.shape) > 1:
+            return {
+                'joint': ob[:, :31],
+                'acc': ob[:, 31:46],
+                'hand': ob[:, 46:49]
+            }
+        else:
+            return {
+                'joint': ob[:31],
+                'acc': ob[31:46],
+                'hand': ob[46:49]
+            }
 
     def compute_reward(self,achieved_goal,goal,info):
         d = goal_distance(achieved_goal,goal)

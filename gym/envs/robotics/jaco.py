@@ -95,8 +95,8 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #         goal[2] += self.np_random.uniform(0, 0.45)
         # else:
         #     goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-0.15, 0.15, size=3)
+        # goal = np.random.randint(0,2,3)
         goal = self.initial_gripper_xpos[:3] + np.random.uniform(-0.1, 0.1, size=3)
-        goal = np.random.randint(0,2,3)
         return goal.copy()
 
     def _env_setup(self):

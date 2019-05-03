@@ -9,7 +9,6 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         self._with_rot = with_rot
         self._config = {"ctrl_reward": 1e-4}
 
-        self.target_range = 0.15
         # env info
         self.reward_type = ["ctrl_reward"]
         self.ob_shape = {"joint": [31]}
@@ -34,7 +33,7 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # print(geom_idx[0])
         # print()
         if len(geom_idx[0]) > 0:
-            # print('GEOM IDX: ',self.sim.data.geom_xpos[geom_idx[0][0]])
+            # print('GEOM IDX',self.sim.data.geom_xpos[geom_idx[0][0]])
             return self.sim.data.geom_xpos[geom_idx[0][0]]
         body_idx = np.where([key == name for key in self.sim.model.body_names])
         # print('AVAILABLE:',self.sim.model.body_names)
@@ -86,14 +85,15 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # print('GOAL\n\n')
         # if self.has_object:
         #     print('DONE\n\n')
-        goal = self._get_hand_pos() + np.random.uniform(-self.target_range, self.target_range, size=3)
+        #     goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
         #     goal += self.target_offset
         #     goal[2] = self.height_offset
         #     if self.target_in_the_air and self.np_random.uniform() < 0.5:
         #         goal[2] += self.np_random.uniform(0, 0.45)
         # else:
         #     goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-0.15, 0.15, size=3)
-        # goal = np.random.randint(0,2,3)
+        # goal = np.random.randint(0,2,1)
+        goal = np.random.randint(0,2,3)
         return goal.copy()
 
     def _env_setup(self, initial_qpos):

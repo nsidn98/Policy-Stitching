@@ -87,7 +87,6 @@ class FetchEnv(robot_env.RobotEnv):
     def _get_obs(self):
         # positions
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
-        print("Grip pos:",grip_pos)
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt
         robot_qpos, robot_qvel = utils.robot_get_obs(self.sim)
@@ -174,7 +173,7 @@ class FetchEnv(robot_env.RobotEnv):
         return (d < self.distance_threshold).astype(np.float32)
 
     def _env_setup(self, initial_qpos):
-        print("QPOS\n\n")
+        print(" fetch_env.py env setup\n\n")
         for name, value in initial_qpos.items():
             self.sim.data.set_joint_qpos(name, value)
         utils.reset_mocap_welds(self.sim)

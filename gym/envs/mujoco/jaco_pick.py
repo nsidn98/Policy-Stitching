@@ -4,9 +4,6 @@ from gym.envs.mujoco import mujoco_env
 
 from gym.envs.mujoco.jaco import JacoEnv
 
-def goal_distance(goal_a, goal_b):
-    assert goal_a.shape == goal_b.shape
-    return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class JacoPickEnv(JacoEnv):
     def __init__(self, with_rot=1):
@@ -17,7 +14,6 @@ class JacoPickEnv(JacoEnv):
         })
         self._context = None
         self._norm = False
-        self.distance_threshold = 0.02
 
         # state
         self._pick_count = 0
@@ -58,14 +54,13 @@ class JacoPickEnv(JacoEnv):
             self._pick_count += 1
 
         # fail
-        # if on_ground and self._pick_count > 0:
-            # done = True
+        if on_ground and self._pick_count > 0:
+            done = True
 
-        done = False
         # success
         if self._pick_count == 50:
             success = True
-            # done = True
+            done = True
             print('success')
 
         reward = ctrl_reward + pick_reward
@@ -89,23 +84,18 @@ class JacoPickEnv(JacoEnv):
     def _get_obs(self):
         # print('GET OBS\n\n')
         # positions
-        # grip_pos = self.sim.data.get_site_xpos('jaco:grip')
-        grip_pos = self._get_pos("jaco_link_hand")
-        print("Grip pos", grip_pos)
-        # grip_pos = self._get_hand_pos()
-        # dt = self.sim.nsubsteps * self.sim.model.opt.timestep
-        # grip_velp = self.sim.data.get_joint_qvel('jaco_joint_6') * dt
+        grip_pos = self.sim.data.get_joint_qpos('jaco_joint_finger_1')
+        dt = self.sim.nsubsteps * self.sim.model.opt.timestep
+        grip_velp = self.sim.data.get_joint_qvel('jaco_joint_finger_1') * dt
         object_pos = self._get_pos('target')
-        # print("Obj pos:",object_pos.ravel)
         object_rel_pos = object_pos - grip_pos
         # achieved_goal = grip_pos.copy()
         achieved_goal = object_pos.copy()
         # print('Position')
         # print(grip_pos,object_pos,object_rel_pos)
         # print()
-        # print("Grip pos: ",grip_pos)
-
-        obs = np.concatenate([grip_pos, object_pos.ravel(), object_rel_pos.ravel()])
+        obs = np.concatenate([
+            [grip_pos], object_pos.ravel(), object_rel_pos.ravel()])
         # print("grip pos, object pos, relpos")
         # print(grip_pos)
         # print(self.sim.data.get_joint_qpos('jaco_joint_finger_2'))
@@ -171,11 +161,3 @@ class JacoPickEnv(JacoEnv):
         self.reset_box()
 
         return self._get_obs()
-
-    def compute_reward(self, achieved_goal, goal, info):
-        # Compute distance between goal and the achieved goal.
-        d = goal_distance(achieved_goal, goal)
-        if self.reward_type == 'sparse':
-            return -(d > self.distance_threshold).astype(np.float32)
-        else:
-            return -d

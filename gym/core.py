@@ -1,3 +1,4 @@
+'''core jaco python'''
 import logging
 logger = logging.getLogger(__name__)
 
@@ -337,6 +338,9 @@ class Wrapper(Env):
 
     def _seed(self, seed=None):
         return self.env.seed(seed)
+    
+    def compute_reward(self,achieved_goal,desired_goal,info):
+        return self.env.compute_reward(achieved_goal,desired_goal,info)
 
     def __str__(self):
         return '<{}{}>'.format(type(self).__name__, self.env)
