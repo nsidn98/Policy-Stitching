@@ -32,7 +32,7 @@ class MujocoEnv(gym.Env):
         self.viewer = None
         self.rgb_rendering_tracking = rgb_rendering_tracking
         self._viewers = {}
-
+        # self.initial_gripper_xpos = self.sim.data.get_site_xpos('').copy()
         self.metadata = {
             'render.modes': ['human', 'rgb_array', 'depth_array'],
             'video.frames_per_second': int(np.round(1.0 / self.dt))
@@ -97,7 +97,7 @@ class MujocoEnv(gym.Env):
     # -----------------------------
 
     def reset(self):
-        print('RESETTING in mujoco_env.py\n')
+        # print('RESETTING in mujoco_env.py\n')
         self.sim.reset()
         ob = self.reset_model()
         return ob

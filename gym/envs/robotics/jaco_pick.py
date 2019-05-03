@@ -1,8 +1,8 @@
 import numpy as np
 from gym import utils
-from gym.envs.mujoco import mujoco_env
+from gym.envs.robotics import mujoco_env
 
-from gym.envs.mujoco.jaco import JacoEnv
+from gym.envs.robotics.jaco import JacoEnv
 
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
@@ -28,7 +28,8 @@ class JacoPickEnv(JacoEnv):
         self.reward_type += ["pick_reward", "success"]
         self.ob_type = self.ob_shape.keys()
 
-        mujoco_env.MujocoEnv.__init__(self, "jaco_pick.xml", 4)
+        # mujoco_env.MujocoEnv.__init__(self, "jaco_pick.xml", 4)
+        mujoco_env.MujocoEnv.__init__(self, "jaco_reach.xml", 4)
         utils.EzPickle.__init__(self)
 
     def set_norm(self, norm):
@@ -47,7 +48,7 @@ class JacoPickEnv(JacoEnv):
         ctrl_reward = self._ctrl_reward(a)
 
         # dist_hand = self._get_distance_hand('box')
-        dist_hand = self._get_distance_hand('target')
+        dist_hand = self._get_distance_hand('ball')
         box_z = self._get_box_pos()[2] # z coordinate of box
         in_air = box_z > 0.04 # diameter of ball
         on_ground = box_z < 0.04
@@ -75,17 +76,6 @@ class JacoPickEnv(JacoEnv):
         reward  =self.compute_reward(ob['achieved_goal'],self.goal,info)
         return ob, reward, done, info
 
-    # def _get_obs(self):
-    #     qpos = self.sim.data.qpos
-    #     qvel = self.sim.data.qvel
-    #     obs = np.concatenate([qpos, qvel]).ravel()
-    #     if self._norm:
-    #         std = [5, 10, 20, 50, 100, 150, 0.2, 0.2,
-    #                0.2, 1, 0.2, 1, 1, 0.2, 0.2, 0.2,
-    #                50, 50, 70, 70, 100, 100, 50, 50,
-    #                50, 5, 2, 10, 50, 50, 50]
-    #         obs /= std
-    #     return obs
     def _is_success(self,achieved_goal,desired_goal):
         d = goal_distance(achieved_goal,desired_goal)
         return (d < self.distance_threshold).astype(np.float32)
@@ -95,7 +85,7 @@ class JacoPickEnv(JacoEnv):
         a = self._get_pos('jaco_link_hand')
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         grip_velp = self.sim.data.get_joint_qvel('jaco_joint_finger_1') * dt
-        object_pos = self._get_pos('target')
+        object_pos = self._get_pos('ball')
         # print('jaco_pick.py pos target')
         # print(object_pos)
         object_rel_pos = object_pos - grip_pos

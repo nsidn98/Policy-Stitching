@@ -1,6 +1,6 @@
 import numpy as np
 from gym import utils
-from gym.envs.mujoco import mujoco_env
+from gym.envs.robotics import mujoco_env
 
 
 class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
@@ -27,30 +27,34 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     # get absolute coordinate
     def _get_pos(self, name):
-        # print('NAME:',name)
-        geom_idx = np.where([key == name for key in self.sim.model.geom_names])
-        # print('GEOM IDX')
-        # print(geom_idx[0])
+        # print('FREE')
+        # print(self.sim.model.geom_names)
+        # print(self.sim.model.body_names)
         # print()
+        geom_idx = np.where([key == name for key in self.sim.model.geom_names])
         if len(geom_idx[0]) > 0:
             # print('GEOM IDX',self.sim.data.geom_xpos[geom_idx[0][0]])
+            # print()
             return self.sim.data.geom_xpos[geom_idx[0][0]]
         body_idx = np.where([key == name for key in self.sim.model.body_names])
         # print('AVAILABLE:',self.sim.model.body_names)
         # print('BODY IDX')
         # print(body_idx[0])
         # print()
+        # print()
+        # print('BODY IDX',body_idx)
+        # print()
         if len(body_idx[0]) > 0:
-            # print('BODY IDX',self.sim.body_pos[body_idx[0][0]])
+            print('BODY IDX',self.sim.body_pos[body_idx[0][0]])
             return self.sim.body_pos[body_idx[0][0]]
         raise ValueError
 
     def _get_box_pos(self):
         # changed from  return self._get_pos('box')
-        return self._get_pos('target')
+        return self._get_pos('ball')
 
     def _get_target_pos(self):
-        return self._get_pos('target')
+        return self._get_pos('ball')
 
     def _get_hand_pos(self):
         hand_pos = np.mean([self._get_pos(name) for name in [
@@ -124,4 +128,4 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #     self.height_offset = self.sim.data.get_site_xpos('object0')[2]
         self.initial_gripper_xpos = self.sim.data.get_site_xpos('jaco_joint_finger_1').copy()
         if self.has_object:
-            self.height_offset = self.sim.data.get_site_xpos('target')[2]
+            self.height_offset = self.sim.data.get_site_xpos('ball')[2]
