@@ -13,4 +13,7 @@ from gym.envs.robotics.hand.manipulate_touch_sensors import HandBlockTouchSensor
 from gym.envs.robotics.hand.manipulate_touch_sensors import HandEggTouchSensorsEnv
 from gym.envs.robotics.hand.manipulate_touch_sensors import HandPenTouchSensorsEnv
 from gym.envs.robotics.jaco_pick import JacoPickEnv
+from gym.envs.robotics.jaco_toss import JacoTossEnv
+from gym.envs.robotics.jaco_hit import JacoHitEnv
+from gym.envs.robotics.jaco_serve import JacoServeEnv
 # from gym.envs.robotics.jaco_reach import JacoReachEnv

@@ -6,10 +6,11 @@ from gym.envs.robotics.jaco import JacoEnv
 
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
+    print(goal_a.shape)
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class JacoPickEnv(JacoEnv):
-    def __init__(self, with_rot=1,reward_type='dense',distance_threshold=0.05):
+    def __init__(self, with_rot=1,reward_type='dense',distance_threshold=0.03):
         super().__init__(with_rot=with_rot)
         self._config.update({
             "pick_reward": 10,
@@ -24,7 +25,7 @@ class JacoPickEnv(JacoEnv):
 
         # env info
         self.distance_threshold = distance_threshold
-        self.reward_types = 'reward_type'   # different from self.reward_type (Jaco had it originally and was not sure whether to remove it or not)
+        self.reward_types = reward_type   # different from self.reward_type (Jaco had it originally and was not sure whether to remove it or not)
         self.reward_type += ["pick_reward", "success"]
         self.ob_type = self.ob_shape.keys()
 
@@ -127,6 +128,8 @@ class JacoPickEnv(JacoEnv):
 
     def compute_reward(self,achieved_goal,goal,info):
         d = goal_distance(achieved_goal,goal)
+        # print(d.shape)
+        # print("Distance: ",d)
         if self.reward_types == 'sparse':
             return -(d > self.distance_threshold).astype(np.float32)
         else:

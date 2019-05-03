@@ -127,4 +127,4 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #     self.height_offset = self.sim.data.get_site_xpos('object0')[2]
         self.initial_gripper_xpos = self._get_hand_pos().copy()
         # if self.has_object:
-            # self.height_offset = self.sim.data.get_site_xpos('ball')[2]
+            # self.height_offset = self.sim.data.get_site_xpos('target')[2]

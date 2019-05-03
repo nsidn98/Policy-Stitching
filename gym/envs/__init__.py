@@ -6,6 +6,28 @@ register(
     max_episode_steps=100,
 )
 
+register(
+    id='JacoToss-v1',
+    entry_point='gym.envs.robotics:JacoTossEnv',
+    max_episode_steps=200,
+    kwargs={'with_rot': 0},
+)
+
+register(
+    id='JacoHit-v1',
+    entry_point='gym.envs.robotics:JacoHitEnv',
+    max_episode_steps=200,
+    kwargs={'with_rot': 0},
+)
+
+# Serve
+register(
+    id='JacoServe-v1',
+    entry_point='gym.envs.robotics:JacoServeEnv',
+    max_episode_steps=300,
+    kwargs={'with_rot': 0},
+)
+
 # Algorithmic
 # ----------------------------------------
 
