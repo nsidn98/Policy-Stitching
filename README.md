@@ -25,3 +25,4 @@ Modular Reinforcement Learning with policy stitching
 * Place `envs/__init__.py` in the `envs` folder.
 * Place `envs/mujoco/assets/*` in the `envs/mujoco/assets` folder.
 * Place `envs/mujoco/__init__.py,jaco.py,jaco_pick.py` in the `envs/mujoco` folder.
+* To run the HER code on the Jaco environment, go to `baselines/baselines/her/her.py` and change `env.spec.id` to `env.unwrapped.spec.id`.
