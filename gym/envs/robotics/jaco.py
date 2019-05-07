@@ -50,10 +50,10 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_box_pos(self):
         # changed from  return self._get_pos('box')
-        return self._get_pos('ball')
+        return self._get_pos('target')
 
     def _get_target_pos(self):
-        return self._get_pos('ball')
+        return self._get_pos('target')
 
     def _get_hand_pos(self):
         hand_pos = np.mean([self._get_pos(name) for name in [
@@ -88,26 +88,26 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # print('GOAL\n\n')
         # if self.has_object:
         #     print('DONE\n\n')
-        #     goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
-        #     goal += self.target_offset
-        #     goal[2] = self.height_offset
-        #     if self.target_in_the_air and self.np_random.uniform() < 0.5:
-        #         goal[2] += self.np_random.uniform(0, 0.45)
+        goal = self.initial_gripper_xpos[:3] + np.random.uniform(-0.15, 0.15, size=3)
+        # goal += self.target_offset
+        # goal[2] = self.height_offset
+        # if self.target_in_the_air and np.random.uniform() < 0.5:
+            # goal[2] += np.random.uniform(0, 0.45)
         # else:
         #     goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-0.15, 0.15, size=3)
         # goal = np.random.randint(0,2,3)
-        goal = self.initial_gripper_xpos[:3] + np.random.uniform(-0.1, 0.1, size=3)
-        return goal.copy()
+        # goal = self.initial_gripper_xpos[:3] + np.random.uniform(-0.2, 0.2, size=3)
+        return goal
 
     def _env_setup(self):
         # for name, value in initial_qpos.items():
             # self.sim.data.set_joint_qpos(name, value)
         # utils.reset_mocap_welds(self.sim)
-        # self.sim.forward()
+        self.sim.forward()
 
         # Move end effector into position.
-        # gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('robot0:grip')
-        # gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('jaco_joint_finger_1')
+        # gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('jaco_hand')
+        # gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('jaco_hand')
         # gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('jaco_joint_finger_1')
         # gripper_rotation = np.array([1., 0., 1., 0.])
         # self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
@@ -125,6 +125,7 @@ class JacoEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
         # if self.has_object:
         #     self.height_offset = self.sim.data.get_site_xpos('object0')[2]
-        self.initial_gripper_xpos = self._get_hand_pos().copy()
+        # self.initial_gripper_xpos = self._get_hand_pos().copy()
+        self.initial_gripper_xpos = self.sim.data.get_site_xpos('jaco_hand').copy()
         # if self.has_object:
-            # self.height_offset = self.sim.data.get_site_xpos('target')[2]
+        # self.height_offset = self.sim.data.get_site_xpos('target')[2]

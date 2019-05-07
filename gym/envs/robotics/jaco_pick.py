@@ -6,11 +6,11 @@ from gym.envs.robotics.jaco import JacoEnv
 
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
-    print(goal_a.shape)
+    # print(goal_a.shape)
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class JacoPickEnv(JacoEnv):
-    def __init__(self, with_rot=1,reward_type='dense',distance_threshold=0.03):
+    def __init__(self, with_rot=1,reward_type='sparse',distance_threshold=0.08):
         super().__init__(with_rot=with_rot)
         self._config.update({
             "pick_reward": 10,
@@ -29,8 +29,7 @@ class JacoPickEnv(JacoEnv):
         self.reward_type += ["pick_reward", "success"]
         self.ob_type = self.ob_shape.keys()
 
-        # mujoco_env.MujocoEnv.__init__(self, "jaco_pick.xml", 4)
-        mujoco_env.MujocoEnv.__init__(self, "jaco_reach.xml", 4)
+        mujoco_env.MujocoEnv.__init__(self, "jaco_pick.xml", 4)
         utils.EzPickle.__init__(self)
 
     def set_norm(self, norm):
@@ -49,7 +48,7 @@ class JacoPickEnv(JacoEnv):
         ctrl_reward = self._ctrl_reward(a)
 
         # dist_hand = self._get_distance_hand('box')
-        dist_hand = self._get_distance_hand('ball')
+        dist_hand = self._get_distance_hand('target')
         box_z = self._get_box_pos()[2] # z coordinate of box
         in_air = box_z > 0.04 # diameter of ball
         on_ground = box_z < 0.04
@@ -58,24 +57,40 @@ class JacoPickEnv(JacoEnv):
         # if in_air and in_hand:
         #     pick_reward = self._config["pick_reward"] * box_z
         #     self._pick_count += 1
-        #
-        # # fail
-        # if on_ground and self._pick_count > 0:
+
+
+        # if in_hand and in_air:
+        #     self._picked = True
+
+        #     # pick up
+        #     if self._pick_height < min(self._target_pos[2], box_z):
+        #         pick_reward = self._config["pick_reward"] * \
+        #             (min(self._target_pos[2], box_z) - self._pick_height)
+        #         self._pick_height = box_z
+
+        #     # hold
+        #     dist = np.linalg.norm(self._target_pos - self._get_box_pos())
+        #     hold_reward = self._config["hold_reward"] * (1 - dist)
+        #     self._hold_duration += 1
+
+        #     # success
+        #     if self._config['hold_duration'] == self._hold_duration:
+        #         print('success pick!', self._get_box_pos())
+        #         done = success = True
+        #         success_reward = self._config["success_reward"] * (200 - self._t)
+
+        # # guide hand to the box
+        # if not self._picked:
+        #     guide_reward = self._config["guide_reward"] * (self._dist_box - dist_box)
+        #     self._dist_box = dist_box
+
+        # if self._picked and not in_hand:
         #     done = True
 
-        # success
-        # if self._pick_count == 50:
-        #     success = True
-        #     # done = True
-        #     print('success')
-
-        reward = ctrl_reward + pick_reward
-        # info = {"ctrl_reward_sum": ctrl_reward,
-        #         "pick_reward_sum": pick_reward,
-        #         "success_sum": success}
+        # reward = ctrl_reward + pick_reward + hold_reward + guide_reward + success_reward
         info = {"is_success": self._is_success(ob['achieved_goal'], self.goal)}
         # print("Info: ",info)
-        reward  =self.compute_reward(ob['achieved_goal'],self.goal,info)
+        reward = self.compute_reward(ob['achieved_goal'],self.goal,info)
         return ob, reward, done, info
 
     def _is_success(self,achieved_goal,desired_goal):
@@ -84,11 +99,9 @@ class JacoPickEnv(JacoEnv):
 
     def _get_obs(self):
         
-        grip_pos = self._get_hand_pos()
-        # grip_pos = self.sim.data.get_site_xpos('jaco_joint_6')
-        # a = self._get_pos('jaco_link_hand')
+        grip_pos = self.sim.data.get_site_xpos('jaco_hand')
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
-        grip_velp = self.sim.data.get_site_xvelp('jaco_joint_6') * dt
+        grip_velp = self.sim.data.get_site_xvelp('jaco_hand') * dt
         gripper_state = self.data.qpos
         gripper_vel = self.data.qvel*dt
         gripper_acc = self.data.qacc
@@ -97,12 +110,13 @@ class JacoPickEnv(JacoEnv):
         # object_pos = self._get_pos('ball')
         # print('jaco_pick.py pos target')
         # print(object_pos)
+        # target_pos = self._get_pos('box')
         object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(3)
         object_rel_pos = object_pos - grip_pos
         achieved_goal = grip_pos.copy()
 
-        ob = np.concatenate([grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state, object_rot.ravel(),
-            object_velp.ravel(), object_velr.ravel(), grip_velp, np.clip(gripper_vel, -30, 30), gripper_acc])
+        ob = np.concatenate([grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state,
+            grip_velp, np.clip(gripper_vel, -30, 30), gripper_acc])
         # print("object shape", ob.shape) #67
 
         return {
@@ -129,7 +143,7 @@ class JacoPickEnv(JacoEnv):
     def compute_reward(self,achieved_goal,goal,info):
         d = goal_distance(achieved_goal,goal)
         # print(d.shape)
-        # print("Distance: ",d)
+        # print(np.mean(d))
         if self.reward_types == 'sparse':
             return -(d > self.distance_threshold).astype(np.float32)
         else:

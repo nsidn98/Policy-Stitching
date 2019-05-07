@@ -7,6 +7,18 @@ register(
 )
 
 register(
+    id='JacoPickAndPlace-v1',
+    entry_point='gym.envs.robotics:JacoPickAndPlaceEnv',
+    max_episode_steps=100,
+)
+
+register(
+    id='JacoReach-v1',
+    entry_point='gym.envs.robotics:JacoReachEnv',
+    max_episode_steps=200,
+)
+
+register(
     id='JacoToss-v1',
     entry_point='gym.envs.robotics:JacoTossEnv',
     max_episode_steps=200,

@@ -100,7 +100,6 @@
                                     <inertial pos="0.0036132 -6.2241e-005 -0.0583749" quat="0.669114 -0.237618 -0.23799 0.66271" mass="0.58074" diaginertia="0.000817146 0.000671192 0.000606807" />
                                     <joint name="jaco_joint_6" axis="0 0 -1" />
                                     <geom mesh="jaco_link_hand"  name="jaco_link_hand" rgba=".13 .13 .13 1"/>
-                                    <site name="jaco_joint_6" pos="0.0343 0 -0.06588" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
 
 
                                     <body name="jaco_link_finger_1" pos="-0.03978 0 -0.10071" quat="-0.414818 -0.329751 -0.663854 0.52772">
@@ -122,6 +121,8 @@
                                         <joint name="jaco_joint_finger_3" limited="true" axis="0 0 1" range="0 0.698132"/>
                                         <geom mesh="jaco_link_finger_3" name="jaco_link_finger_3" contype="1" conaffinity="1"/>
                                     </body>
+                                    <site name="jaco_hand" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 0 0 1"></site>
+                                    
                                 </body>
                             </body>
                         </body>
@@ -158,8 +159,8 @@
         </body>
         -->
        
-        <body name="ball" pos="0.55 0.25 .04" euler="0 0 0">
-            <geom name="ball" pos="-0.2 0.2 0" contype="1" conaffinity="1" rgba="0.1 0.3 0.7 1" size=".04 .04 .04" type="sphere"/>
+        <body name="target" pos="0.55 0.25 .04" euler="0 0 0">
+            <geom name="target" pos="-0.1 0.3 0" contype="1" conaffinity="1" rgba="0.1 0.3 0.7 1" size=".04 .04 .04" type="sphere"/>
             <joint type="free"/>
         </body>
 		<!-- <geom name="floor0" pos="0.8 0.75 0" size="0.85 0.7 1" type="plane" condim="3" material="floor_mat"></geom> -->
@@ -169,9 +170,9 @@
 
 		<!-- <include file="robot.xml"></include> -->
 		
-		<body pos="1.3 0.75 0.2" name="table0">
+		<!-- <body pos="1.3 0.75 0.2" name="table0">
 			<geom size="0.25 0.35 0.2" type="box" mass="2000" ></geom>
-		</body>
+		</body> -->
 
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>
     </worldbody>

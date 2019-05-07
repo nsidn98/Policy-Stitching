@@ -16,4 +16,5 @@ from gym.envs.robotics.jaco_pick import JacoPickEnv
 from gym.envs.robotics.jaco_toss import JacoTossEnv
 from gym.envs.robotics.jaco_hit import JacoHitEnv
 from gym.envs.robotics.jaco_serve import JacoServeEnv
-# from gym.envs.robotics.jaco_reach import JacoReachEnv
+from gym.envs.robotics.jaco_reach import JacoReachEnv
+from gym.envs.robotics.jaco_pick_place import JacoPickAndPlaceEnv
