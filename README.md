@@ -1,6 +1,6 @@
 # Policy-Stitching
 
-Attempy to modify the source code for MuJoCo environment for the Jaco Robot to solve custom problems.
+Attempt to modify the source code for MuJoCo environment for the Jaco Robot to solve custom problems.
 
 ## DDPG
 
